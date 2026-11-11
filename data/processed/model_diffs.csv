@@ -1,0 +1,9 @@
+target,estimator,model,mean_mae_diff_vs_baseline,folds_improved,folds
+abs_dp_next,ols,enhanced_social,8.596098611889742e-05,1,8
+abs_dp_next,ridge,enhanced_social,8.572760388177864e-05,1,8
+log_vol_next,ols,enhanced_social,0.004631529569254181,5,8
+log_vol_next,ridge,enhanced_social,0.004597864843218349,5,8
+abs_dp_next,ols,enhanced_social_news,8.757899576970941e-05,2,8
+abs_dp_next,ridge,enhanced_social_news,8.732860756770623e-05,2,8
+log_vol_next,ols,enhanced_social_news,0.001975669813197592,5,8
+log_vol_next,ridge,enhanced_social_news,0.0019480694965952339,5,8

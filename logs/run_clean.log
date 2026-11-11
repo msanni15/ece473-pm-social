@@ -1,0 +1,137 @@
+=== stage: select
+                      slug        volume  selected                 exclusion
+37  nba-cle-phi-2026-10-22  8.251638e+06      True                      None
+1   nba-mem-uta-2026-10-26  5.558583e+06      True                      None
+36  nba-den-okc-2026-10-22  5.113707e+06      True                      None
+10  nba-det-phi-2026-10-25  4.837690e+06     False    team already in sample
+9   nba-mem-sac-2026-10-25  4.546650e+06     False    team already in sample
+7   nba-min-cle-2026-10-26  4.537774e+06     False    team already in sample
+0   nba-gsw-den-2026-10-26  4.167091e+06     False    team already in sample
+35  nba-chi-mil-2026-10-23  3.999588e+06      True                      None
+45  nba-cha-bkn-2026-10-21  3.836643e+06      True                      None
+34  nba-nyk-bos-2026-10-23  3.801132e+06      True                      None
+20  nba-was-chi-2026-10-24  3.455814e+06     False    team already in sample
+23  nba-mia-cha-2026-10-24  3.422816e+06     False    team already in sample
+12  nba-tor-min-2026-10-25  3.335625e+06      True                      None
+26  nba-mem-gsw-2026-10-23  3.327598e+06     False    team already in sample
+28  nba-hou-sas-2026-10-23  3.170670e+06      True                      None
+8   nba-was-cha-2026-10-26  3.164697e+06     False  not needed (sample full)
+47  nba-mil-was-2026-10-21  2.971442e+06     False  not needed (sample full)
+4   nba-ind-mil-2026-10-26  2.926494e+06     False  not needed (sample full)
+15  nba-lal-uta-2026-10-25  2.842792e+06     False  not needed (sample full)
+17  nba-nop-den-2026-10-24  2.747788e+06     False  not needed (sample full)
+27  nba-nop-uta-2026-10-23  2.500094e+06     False  not needed (sample full)
+46  nba-min-mia-2026-10-21  2.254812e+06     False  not needed (sample full)
+42  nba-ind-nop-2026-10-21  2.249277e+06     False  not needed (sample full)
+48  nba-atl-orl-2026-10-21  1.970476e+06     False  not needed (sample full)
+40  nba-gsw-lal-2026-10-21  1.942347e+06     False  not needed (sample full)
+29  nba-det-mia-2026-10-23  1.933128e+06     False  not needed (sample full)
+14  nba-ind-bkn-2026-10-25  1.921326e+06     False  not needed (sample full)
+5   nba-dal-mia-2026-10-26  1.838567e+06     False  not needed (sample full)
+30  nba-tor-was-2026-10-23  1.809382e+06     False  not needed (sample full)
+18  nba-hou-atl-2026-10-24  1.678572e+06     False  not needed (sample full)
+16  nba-gsw-phx-2026-10-24  1.677791e+06     False  not needed (sample full)
+13  nba-orl-nyk-2026-10-25  1.593451e+06     False  not needed (sample full)
+11  nba-lac-okc-2026-10-25  1.591186e+06     False  not needed (sample full)
+2   nba-atl-hou-2026-10-26  1.580223e+06     False  not needed (sample full)
+31  nba-min-orl-2026-10-23  1.579720e+06     False  not needed (sample full)
+43  nba-uta-mem-2026-10-21  1.535475e+06     False  not needed (sample full)
+21  nba-mil-phi-2026-10-24  1.477796e+06     False  not needed (sample full)
+3   nba-phx-okc-2026-10-26  1.418924e+06     False  not needed (sample full)
+24  nba-por-sac-2026-10-23  1.410303e+06     False  not needed (sample full)
+38  nba-sac-lac-2026-10-21  1.252373e+06     False  not needed (sample full)
+33  nba-atl-cha-2026-10-23  1.088736e+06     False  not needed (sample full)
+39  nba-phx-por-2026-10-21  1.017135e+06     False  not needed (sample full)
+32  nba-dal-ind-2026-10-23  1.014027e+06     False  not needed (sample full)
+41  nba-dal-hou-2026-10-21  1.005327e+06     False  not needed (sample full)
+19  nba-sas-dal-2026-10-24  8.725842e+05     False  not needed (sample full)
+25  nba-lac-lal-2026-10-23  7.447780e+05     False  not needed (sample full)
+6   nba-chi-bos-2026-10-26  6.242233e+05     False  not needed (sample full)
+44  nba-chi-tor-2026-10-21  4.990988e+05     False  not needed (sample full)
+22  nba-bkn-cle-2026-10-24  4.953461e+05     False  not needed (sample full)
+=== stage: polymarket
+{'slug': 'nba-cle-phi-2026-10-22', 'n_price_home': 146, 'n_price_away': 152, 'n_trades': 2207, 'max_abs_sum_dev': 0.0, 'trades_wrong_market': 0, 'trades_unknown_asset': 0, 'trades_after_start': 0, 'earliest_trade': Timestamp('2026-10-18 07:13:32+0000', tz='UTC'), 'n_pregame_hours': 167, 'n_pregame_price_hours': 143, 'n_pregame_trades': 2207}
+{'slug': 'nba-mem-uta-2026-10-26', 'n_price_home': 138, 'n_price_away': 138, 'n_trades': 1036, 'max_abs_sum_dev': 0.0, 'trades_wrong_market': 0, 'trades_unknown_asset': 0, 'trades_after_start': 0, 'earliest_trade': Timestamp('2026-10-21 02:45:36+0000', tz='UTC'), 'n_pregame_hours': 163, 'n_pregame_price_hours': 136, 'n_pregame_trades': 1036}
+{'slug': 'nba-den-okc-2026-10-22', 'n_price_home': 143, 'n_price_away': 149, 'n_trades': 1218, 'max_abs_sum_dev': 0.0, 'trades_wrong_market': 0, 'trades_unknown_asset': 0, 'trades_after_start': 0, 'earliest_trade': Timestamp('2026-10-17 16:00:12+0000', tz='UTC'), 'n_pregame_hours': 163, 'n_pregame_price_hours': 140, 'n_pregame_trades': 1218}
+{'slug': 'nba-chi-mil-2026-10-23', 'n_price_home': 142, 'n_price_away': 147, 'n_trades': 881, 'max_abs_sum_dev': 0.0, 'trades_wrong_market': 0, 'trades_unknown_asset': 0, 'trades_after_start': 0, 'earliest_trade': Timestamp('2026-10-20 21:28:36+0000', tz='UTC'), 'n_pregame_hours': 164, 'n_pregame_price_hours': 140, 'n_pregame_trades': 881}
+{'slug': 'nba-cha-bkn-2026-10-21', 'n_price_home': 154, 'n_price_away': 153, 'n_trades': 1174, 'max_abs_sum_dev': 0.0, 'trades_wrong_market': 0, 'trades_unknown_asset': 0, 'trades_after_start': 0, 'earliest_trade': Timestamp('2026-10-15 01:07:17+0000', tz='UTC'), 'n_pregame_hours': 167, 'n_pregame_price_hours': 154, 'n_pregame_trades': 1174}
+{'slug': 'nba-nyk-bos-2026-10-23', 'n_price_home': 144, 'n_price_away': 144, 'n_trades': 1205, 'max_abs_sum_dev': 0.0, 'trades_wrong_market': 0, 'trades_unknown_asset': 0, 'trades_after_start': 0, 'earliest_trade': Timestamp('2026-10-17 11:17:18+0000', tz='UTC'), 'n_pregame_hours': 167, 'n_pregame_price_hours': 142, 'n_pregame_trades': 1205}
+{'slug': 'nba-tor-min-2026-10-25', 'n_price_home': 141, 'n_price_away': 139, 'n_trades': 1805, 'max_abs_sum_dev': 0.0050000000000000044, 'trades_wrong_market': 0, 'trades_unknown_asset': 0, 'trades_after_start': 0, 'earliest_trade': Timestamp('2026-10-21 02:04:53+0000', tz='UTC'), 'n_pregame_hours': 167, 'n_pregame_price_hours': 140, 'n_pregame_trades': 1805}
+{'slug': 'nba-hou-sas-2026-10-23', 'n_price_home': 140, 'n_price_away': 139, 'n_trades': 671, 'max_abs_sum_dev': 0.0, 'trades_wrong_market': 0, 'trades_unknown_asset': 0, 'trades_after_start': 0, 'earliest_trade': Timestamp('2026-10-18 15:00:09+0000', tz='UTC'), 'n_pregame_hours': 163, 'n_pregame_price_hours': 138, 'n_pregame_trades': 671}
+=== stage: bluesky
+bkn {'ok': 361}
+bos {'ok': 361}
+cha {'ok': 361}
+chi {'ok': 361}
+cle {'ok': 361}
+den {'ok': 361}
+hou {'ok': 361}
+mem {'ok': 361}
+mil {'ok': 361}
+min {'ok': 361}
+nyk {'ok': 361}
+okc {'ok': 361}
+phi {'ok': 361}
+sas {'ok': 361}
+tor {'ok': 361}
+uta {'ok': 361}
+posts 28115 window statuses {'ok': 5776}
+=== stage: gdelt
+files {'ok': 1444} matched articles 31809
+=== stage: merge
+{
+  "rows": 1321,
+  "games": 8,
+  "duplicate_game_hours": 0,
+  "rows_ending_after_start": 0,
+  "targets_ending_after_start": 0,
+  "non_hourly_gaps": 0,
+  "tz_is_utc": true,
+  "missing_by_column": {
+    "p_home_obs": 188,
+    "p_home": 8,
+    "dp": 16,
+    "abs_dp": 16,
+    "abs_dp_lag1": 24,
+    "log_vol_lag1": 8,
+    "abs_dp_next": 16,
+    "log_vol_next": 8
+  }
+}
+=== stage: analyze
+model rows 1289 games 8
+          target estimator                 model  mean_mae  mean_rmse  n_test_rows
+0    abs_dp_next       ols              baseline  0.003400   0.005850         1289
+1    abs_dp_next       ols       enhanced_social  0.003486   0.005891         1289
+2    abs_dp_next       ols  enhanced_social_news  0.003488   0.005901         1289
+3    abs_dp_next       ols            train_mean  0.003663   0.005981         1289
+4    abs_dp_next     ridge              baseline  0.003400   0.005850         1289
+5    abs_dp_next     ridge       enhanced_social  0.003486   0.005891         1289
+6    abs_dp_next     ridge  enhanced_social_news  0.003488   0.005901         1289
+7    abs_dp_next     ridge            train_mean  0.003663   0.005981         1289
+8   log_vol_next       ols              baseline  0.985497   1.459962         1289
+9   log_vol_next       ols       enhanced_social  0.990129   1.464582         1289
+10  log_vol_next       ols  enhanced_social_news  0.987473   1.465152         1289
+11  log_vol_next       ols            train_mean  2.583019   3.205198         1289
+12  log_vol_next     ridge              baseline  0.985315   1.459920         1289
+13  log_vol_next     ridge       enhanced_social  0.989913   1.464513         1289
+14  log_vol_next     ridge  enhanced_social_news  0.987263   1.465076         1289
+15  log_vol_next     ridge            train_mean  2.583019   3.205198         1289
+         target estimator                 model  mean_mae_diff_vs_baseline  folds_improved  folds
+0   abs_dp_next       ols       enhanced_social                   0.000086               1      8
+1   abs_dp_next     ridge       enhanced_social                   0.000086               1      8
+2  log_vol_next       ols       enhanced_social                   0.004632               5      8
+3  log_vol_next     ridge       enhanced_social                   0.004598               5      8
+4   abs_dp_next       ols  enhanced_social_news                   0.000088               2      8
+5   abs_dp_next     ridge  enhanced_social_news                   0.000087               2      8
+6  log_vol_next       ols  enhanced_social_news                   0.001976               5      8
+7  log_vol_next     ridge  enhanced_social_news                   0.001948               5      8
+                             sample        target estimator                 model  mean_mae_diff_vs_baseline  folds_improved  folds
+0  observed-price rows only (n=838)   abs_dp_next       ols       enhanced_social                   0.000095               3      8
+1  observed-price rows only (n=838)   abs_dp_next     ridge       enhanced_social                   0.000094               3      8
+2  observed-price rows only (n=838)  log_vol_next       ols       enhanced_social                   0.011136               2      8
+3  observed-price rows only (n=838)  log_vol_next     ridge       enhanced_social                   0.011046               2      8
+4  observed-price rows only (n=838)   abs_dp_next       ols  enhanced_social_news                   0.000092               3      8
+5  observed-price rows only (n=838)   abs_dp_next     ridge  enhanced_social_news                   0.000092               3      8
+6  observed-price rows only (n=838)  log_vol_next       ols  enhanced_social_news                   0.008047               3      8
+7  observed-price rows only (n=838)  log_vol_next     ridge  enhanced_social_news                   0.007959               3      8

@@ -1,0 +1,19 @@
+{
+  "rows": 1321,
+  "games": 8,
+  "duplicate_game_hours": 0,
+  "rows_ending_after_start": 0,
+  "targets_ending_after_start": 0,
+  "non_hourly_gaps": 0,
+  "tz_is_utc": true,
+  "missing_by_column": {
+    "p_home_obs": 188,
+    "p_home": 8,
+    "dp": 16,
+    "abs_dp": 16,
+    "abs_dp_lag1": 24,
+    "log_vol_lag1": 8,
+    "abs_dp_next": 16,
+    "log_vol_next": 8
+  }
+}

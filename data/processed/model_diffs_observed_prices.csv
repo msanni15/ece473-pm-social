@@ -1,0 +1,9 @@
+sample,target,estimator,model,mean_mae_diff_vs_baseline,folds_improved,folds
+observed-price rows only (n=838),abs_dp_next,ols,enhanced_social,9.481005661881773e-05,3,8
+observed-price rows only (n=838),abs_dp_next,ridge,enhanced_social,9.435750175450377e-05,3,8
+observed-price rows only (n=838),log_vol_next,ols,enhanced_social,0.011136123812161156,2,8
+observed-price rows only (n=838),log_vol_next,ridge,enhanced_social,0.011045652270084916,2,8
+observed-price rows only (n=838),abs_dp_next,ols,enhanced_social_news,9.23859099246886e-05,3,8
+observed-price rows only (n=838),abs_dp_next,ridge,enhanced_social_news,9.198329401772333e-05,3,8
+observed-price rows only (n=838),log_vol_next,ols,enhanced_social_news,0.008046832322268202,3,8
+observed-price rows only (n=838),log_vol_next,ridge,enhanced_social_news,0.00795948806044014,3,8

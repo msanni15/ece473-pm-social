@@ -1,0 +1,9 @@
+# Minimum versions; tested with both the newest releases (pandas 3.1, numpy 2.4)
+# and Colab-like older releases (see reports/validation_report.md).
+requests>=2.31
+pandas>=2.2
+numpy>=1.26
+pyarrow>=14
+matplotlib>=3.8
+scikit-learn>=1.4
+pytest>=7
