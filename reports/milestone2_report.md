@@ -1,6 +1,6 @@
 # Social Media and In-Game Prediction-Market Prices: Milestone II Report
 
-*ECE 473 · Milestone II · November 12, 2026 · [names]*
+*ECE 473 · Milestone II · November 12, 2026 · Alicia Cheng and Misimi Sanni*
 
 ## Summary
 **Milestone II goal (from our proposal):** expand and clean the dataset, complete the primary empirical analysis, compare market-only models with models that add social-media information on held-out events, and run initial robustness checks across time horizons and alternative attention measures.
