@@ -1,0 +1,10 @@
+{
+  "primary_rows": 1163,
+  "observed_history_rows": 1152,
+  "games": 8,
+  "bootstrap_draws": 10000,
+  "seed": 473,
+  "primary_design": "leave-one-game-out; unchanged OLS/Ridge alpha=1 specifications",
+  "uncertainty": "exploratory whole-game bootstrap and symmetric game-level sign-flip; overlapping training folds are not independent",
+  "probability_metric": "against clipped probability endpoint implied by the logit target"
+}
