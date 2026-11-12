@@ -1,0 +1,9 @@
+{
+  "design_sha256": "e50739f34440d8d22d7afaaf60a5e85802f375b9361d72d2c5c82dcda13166c1",
+  "selected_games": 34,
+  "collected_games": 34,
+  "minute_rows": 11220,
+  "post_side_rows": 4852,
+  "both_sides_covered_minutes": 11220,
+  "status": "collection refreshed; holdout outcomes were previously evaluated"
+}

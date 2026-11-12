@@ -1,4 +1,28 @@
-# ECE 473: Social media, news, and prediction markets (Milestone I)
+# ECE 473: Social attention and prediction-market activity
+
+## Final-project work
+
+The expanded study contains **66 NBA games** and evaluates both Bluesky-to-market
+and market-to-Bluesky forecasting. It preserves the original pilot below.
+
+- [Current status and remaining author tasks](reports/final_project_status.md)
+- [Final-paper methods scaffold](reports/final_paper_scaffold.md)
+- [Replication methods and commands](reports/final_replication_methods.md)
+- [Human content-review protocol](reports/social_annotation_guide.md)
+
+The chronological stages use eight development games, 24 later October games,
+then 34 November games across nine dates. Models fit on earlier games only.
+Forward targets cover price changes and volume; reverse targets cover subsequent
+posting. Results include uncertainty and sensitivity checks; they do not establish
+causation, first publication of news, or executable trading profit. Content review
+and the students' required unaided paper sections remain outstanding.
+
+Main expanded datasets: `data/processed/final_social/` and
+`data/processed/final_replication/`. Figures use the `fig_final_` prefix. The final
+replication scripts require the existing `requirements.txt`; all 37 synthetic tests
+pass in Python 3.11.18.
+
+## Original Milestone I pilot
 
 This pilot dataset and analysis link **Polymarket** NBA game-winner (moneyline) markets with hourly
 **Bluesky** post counts and **GDELT** news-article counts. They are used to test whether outside
