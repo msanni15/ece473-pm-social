@@ -79,13 +79,14 @@ def event_study(panel, centers, radius=10):
         used.append({"event_id": event_id, "slug": e.slug, "minute": e.minute, "side": e.side})
         for i, lag in enumerate(offsets):
             rows.append({"event_id": event_id, "slug": e.slug, "lag": int(lag),
+                         "p_side": float(probability.iloc[i]),
                          "price_change_pp": 100 * float(price_delta.iloc[i]),
                          "posts": float(window[f"posts_{e.side}"].iloc[i])})
-    detail = pd.DataFrame(rows, columns=["event_id", "slug", "lag", "price_change_pp", "posts"])
+    detail = pd.DataFrame(rows, columns=["event_id", "slug", "lag", "p_side", "price_change_pp", "posts"])
     if detail.empty:
         raise ValueError("No complete event windows; inspect missing coverage or event timestamps")
-    by_game = detail.groupby(["slug", "lag"])[["price_change_pp", "posts"]].mean().reset_index()
-    curve = by_game.groupby("lag").agg(price_change_pp=("price_change_pp", "mean"),
+    by_game = detail.groupby(["slug", "lag"])[["p_side", "price_change_pp", "posts"]].mean().reset_index()
+    curve = by_game.groupby("lag").agg(p_side=("p_side", "mean"), price_change_pp=("price_change_pp", "mean"),
                                        posts=("posts", "mean"), n_games=("slug", "nunique")).reset_index()
     return curve, by_game, pd.DataFrame(used)
 
@@ -129,8 +130,8 @@ def make_figures(panel, events, output: Path, radius=10):
         by_game.to_csv(output / f"fig_m2_timing_{kind}_by_game.csv", index=False)
         used.to_csv(output / f"fig_m2_timing_{kind}_events.csv", index=False)
         fig, ax = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
-        ax[0].plot(curve.lag, curve.price_change_pp, marker=".", color="tab:blue")
-        ax[0].set_ylabel("Probability change (pp)\nrelative to minute -1")
+        ax[0].plot(curve.lag, 100 * curve.p_side, marker=".", color="tab:blue")
+        ax[0].set_ylabel("Win probability (%)\n(scoring / benefiting side)")
         ax[1].plot(curve.lag, curve.posts, marker=".", color="tab:orange")
         ax[1].set_ylabel("Posts per minute\n(scoring / benefiting side)")
         ax[1].set_xlabel("Minutes relative to event-containing minute")
