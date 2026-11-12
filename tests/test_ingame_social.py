@@ -165,3 +165,18 @@ def test_timing_differences_do_not_cross_gaps_or_unobserved_prices():
                                 "posts_home": 1., "posts_away": 2., "imbalance": 0.})
     panel = timing.minute_panel(market, social_data)
     assert panel.dp.notna().tolist() == [False, True, False, False]
+
+
+def test_injury_audit_deduplicates_actual_posts_and_preserves_query_sides():
+    from pmsocial import timing
+    games, windows = fixtures()
+    windows[2]["posts"] = [post()]
+    windows[8]["posts"] = [post()]
+    posts = social.build_posts(windows, games)
+    context = pd.DataFrame({"slug": games.iloc[0].slug, "minute": [TIP], "in_game": True,
+                            "p_home": .6, "score_diff": 3})
+    review = timing.injury_review_table(posts, context)
+    assert len(posts) == 2 and len(review) == 1
+    assert review.iloc[0].matched_sides == "away;home"
+    assert review.iloc[0].side_matches == 2
+    assert review.iloc[0].review_category == ""  # no invented injury-news label

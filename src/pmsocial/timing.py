@@ -115,6 +115,68 @@ def cross_correlations(panel, radius=10):
     return summary, detail
 
 
+def injury_review_table(posts: pd.DataFrame, panel: pd.DataFrame):
+    """One candidate per actual post/game, retaining all matched query sides.
+
+    Matching both team queries is not evidence that both teams suffered an injury.
+    Keep the contractual side counts unchanged; deduplicate only this audit view.
+    Labels are blank until a reviewer reads the texts. Novelty is not inferred.
+    """
+    p = posts[posts.kw_injury].copy()
+    p["minute"] = p.sort_at.dt.floor("min")
+    p = p.merge(panel[["slug", "minute", "in_game", "p_home", "score_diff"]],
+                on=["slug", "minute"], how="left", validate="many_to_one")
+    if p.in_game.isna().any():
+        raise ValueError("Market input does not cover all injury-post minutes")
+    p["matched_sides"] = p.groupby(["slug", "uri"]).side.transform(lambda x: ";".join(sorted(set(x))))
+    p["side_matches"] = p.groupby(["slug", "uri"]).side.transform("size")
+    p = p.drop_duplicates(["slug", "uri"]).sort_values(["slug", "sort_at", "uri"])
+    cols = ["slug", "uri", "sort_at", "text", "matched_sides", "side_matches", "in_game", "p_home", "score_diff"]
+    p = p[cols].reset_index(drop=True)
+    p["review_category"] = ""
+    p["review_note"] = ""
+    p["reviewer"] = ""
+    return p
+
+
+def injury_timelines(panel, posts, games, output):
+    """All-game descriptive injury-candidate timelines; no event selection by outcome."""
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+
+    candidates = injury_review_table(posts, panel)
+    n = panel.slug.nunique()
+    fig, axes = plt.subplots(n, 1, figsize=(11, 2.2 * n), squeeze=False)
+    inventory = []
+    for ax, (slug, g) in zip(axes[:, 0], panel.groupby("slug")):
+        game = games[games.slug == slug].iloc[0]
+        hits = candidates[candidates.slug == slug]
+        inside = g[g.in_game]
+        ax.plot(g.minute + pd.Timedelta(minutes=1), g.p_home, color="tab:blue", linewidth=1)
+        if len(inside):
+            ax.axvspan(inside.minute.min(), inside.minute.max() + pd.Timedelta(minutes=1),
+                       alpha=.08, color="tab:blue")
+        ax.axvline(game.game_start_utc, color="gray", linestyle="--", linewidth=.8)
+        ax.scatter(hits.sort_at, np.full(len(hits), .035), marker="|", s=100,
+                   color="tab:red", label="Unique injury-keyword posts")
+        ax.set_ylim(0, 1)
+        ax.set_xlim(g.minute.min(), g.minute.max() + pd.Timedelta(minutes=1))
+        ax.set_ylabel("Home win\nprobability")
+        ax.set_title(f"{slug} | {len(hits)} unique keyword posts; {int(hits.in_game.sum())} in game", fontsize=10)
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%H:%M", tz=g.minute.dt.tz))
+        ax.grid(alpha=.15)
+        inventory.append({"slug": slug, "unique_keyword_posts": len(hits),
+                          "unique_keyword_posts_in_game": int(hits.in_game.sum()),
+                          "side_matched_keyword_rows": int(hits.side_matches.sum())})
+    axes[-1, 0].set_xlabel("UTC time; red ticks = keyword matches (not verified breaking injury news)")
+    fig.suptitle("Bluesky injury-keyword candidates and market context\nShading = ESPN in-game minutes; dashed line = scheduled tip-off", fontsize=12)
+    fig.tight_layout(rect=(0, 0, 1, .97))
+    fig.savefig(output / "fig_m2_bluesky_injury_timelines.png", dpi=140)
+    plt.close(fig)
+    pd.DataFrame(inventory).to_csv(output / "fig_m2_bluesky_injury_inventory.csv", index=False)
+    return candidates
+
+
 def make_figures(panel, events, output: Path, radius=10):
     import matplotlib
     matplotlib.use("Agg")
@@ -130,15 +192,16 @@ def make_figures(panel, events, output: Path, radius=10):
         by_game.to_csv(output / f"fig_m2_timing_{kind}_by_game.csv", index=False)
         used.to_csv(output / f"fig_m2_timing_{kind}_events.csv", index=False)
         fig, ax = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
-        ax[0].plot(curve.lag, 100 * curve.p_side, marker=".", color="tab:blue")
-        ax[0].set_ylabel("Win probability (%)\n(scoring / benefiting side)")
-        ax[1].plot(curve.lag, curve.posts, marker=".", color="tab:orange")
-        ax[1].set_ylabel("Posts per minute\n(scoring / benefiting side)")
+        ax[0].plot(curve.lag, curve.posts, marker=".", color="tab:orange")
+        ax[0].set_ylabel("Bluesky posts per minute\n(scoring / benefiting side)")
+        ax[0].set_ylim(bottom=0)
+        ax[1].plot(curve.lag, 100 * curve.p_side, marker=".", color="tab:blue")
+        ax[1].set_ylabel("Win probability (%)\n(scoring / benefiting side)")
         ax[1].set_xlabel("Minutes relative to event-containing minute")
         for a in ax:
             a.axvline(0, color="gray", linestyle="--", linewidth=1)
             a.grid(alpha=0.2)
-        fig.suptitle(f"{title}: {len(used)} complete events, {used.slug.nunique()} games\nEqual game weights; overlapping windows retained")
+        fig.suptitle(f"Bluesky attention around {title.lower()}\n{len(used)} events, {used.slug.nunique()} games; equal game weights; overlapping windows retained")
         fig.tight_layout()
         fig.savefig(stem.with_suffix(".png"), dpi=160)
         plt.close(fig)

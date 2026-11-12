@@ -37,11 +37,11 @@ nonlinear logit transformation need not preserve a martingale's zero mean change
 
 - Completed: collection, all four attention measures, exact Parquet exports,
   synthetic unit tests, reproducible cached rerun, provisional relevance review.
-- Implemented and tested with synthetic inputs: timing calculations and plotting.
-- Awaiting the market owner's `ingame_market_minute.parquet` and
-  `ingame_events.parquet`: actual timing analysis, real event-study figures, and
-  integration with market models. Neither input was present on GitHub `main` when
-  this component was built. No empirical timing result is claimed here.
+- Completed with real market/ESPN inputs after market PR #2 was merged by Alicia:
+  timing calculations, two event-study figures, lead-lag correlations, and
+  all-eight-game injury-keyword timelines. The run includes 911 scoring-play
+  windows and 185 large-price-jump windows; all have complete 21-minute windows.
+  Forecast-model integration and results remain the market/model owner's work.
 - Optional nickname expansion was not used. The existing Milestone I search term
   for each team is recorded in `data/processed/ingame_query_checks.csv`. Canonical
   queries are marked as inherited, with zero new relevance reviews, rather than
@@ -152,7 +152,7 @@ and rerun the audit after actual game-time trimming before using a final
 game-relevance percentage in the report. The current data are not filtered using
 these labels; they retain the agreed keyword-count definition.
 
-## Timing methods ready for the market-data handoff
+## Timing methods and generated analysis artifacts
 
 `timing.py` joins inputs by unique `(slug, minute)` keys and rejects unmatched
 market minutes. Price differences require consecutive observed in-game prices;
@@ -184,8 +184,9 @@ total-post measure and a directional imbalance sensitivity check are both saved.
 Minute 0 includes the whole event-containing minute. These analyses cannot order
 two reactions occurring within the same minute. Shared scoring shocks, other
 news, repeated events, and the choice to select large market moves prevent a
-causal interpretation. No claim that either series leads the other should be
-made until the real inputs have been processed and the plots inspected.
+causal interpretation. Generated curves and per-game CSVs are measurement
+artifacts for the students to inspect and interpret independently; a visible
+post-event rise is not a causal effect estimate or proof of individual post latency.
 
 ## Checklist for addressing the TA's six points
 
@@ -217,12 +218,43 @@ python scripts/run_timing.py
 
 Collection reruns use the branch's raw caches and do not append to the shared
 Milestone I request log. This implementation was checked in isolated Python
-3.11.18: 20 tests passed, including all nine existing tests, and a cached full
-collection rebuild completed successfully. Timing plotting was exercised only
-on synthetic inputs in a temporary directory; no synthetic plots were saved as
-research results.
+3.11.18: 25 tests passed, including the existing nine pilot tests and four market
+tests. A cached full collection rebuild completed successfully. Timing plotting
+was exercised on synthetic inputs in a temporary directory and then on the real
+market/ESPN handoff. No synthetic plots were saved as research results.
 
 `run_timing.py` writes `figures/fig_m2_timing_scoring.png`,
 `fig_m2_timing_jumps.png`, `fig_m2_cross_correlation.png`, accompanying CSV tables,
-and a JSON event-coverage summary. It exits with a clear missing-input message
-until the real market and ESPN files exist.
+and a JSON event-coverage summary. Those figures and tables have now been generated
+from the real inputs. It also writes `fig_m2_bluesky_injury_timelines.png` and an
+injury inventory CSV. The original minute and post Parquet files are unchanged.
+
+## Injury-keyword audit handoff
+
+The 92 keyword-matched post-side rows reduce to 64 distinct `(slug, uri)` pairs;
+26 distinct posts fall inside the market file's ESPN-derived `in_game` minutes.
+The audit CSV at `data/raw/bluesky_ingame/injury_review.csv` retains all matched
+query sides. Matching both queries is not evidence that both teams had an injury.
+The contractual `injury_home`/`injury_away` columns mean query-side matches, not
+independently established attribution to an injured player's team.
+
+The AI assistant read all 64 distinct texts and added provisional categories and
+notes. Of the 26 in-game texts, the categories are: 7 literal-keyword false
+positives, 10 repetitions of already-described availability information, 4 general
+or hypothetical discussions, 1 generic report, 2 ambiguous reactions, and 2 live
+injury/symptom candidates. These are not human-validated labels or verified events.
+
+Examples requiring attention are a Cam Johnson ankle/return-status post at
+2026-10-23 03:10:07 UTC (Nuggets–Thunder) and a post describing Walsh limping at
+2026-10-24 00:50:28 UTC (Knicks–Celtics). The first attributes its information to
+the broadcast; the second is a symptom observation, not a confirmed diagnosis.
+Neither establishes that Bluesky first published the information or led the market.
+Repeated Kawhi-availability posts during Raptors–Timberwolves concern a topic
+already present in the pregame collection; some contain inconsistent knee-side
+descriptions. Their count should not be equated with distinct new injury events.
+
+The broad keyword feature was preserved for the partner's predefined models.
+Any cleaned feature, source verification, or case-study selection should be declared
+as additional exploratory analysis. In particular, weak baseline predictability
+and fast basket reactions do not logically establish that all possible Bluesky
+value must come from injuries.
