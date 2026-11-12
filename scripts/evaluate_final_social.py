@@ -5,6 +5,7 @@ test outcomes. First use scores the frozen held-out sample; subsequent edits mus
 be disclosed as post-test exploratory work.
 """
 import hashlib
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -79,18 +80,34 @@ def paired_interval(losses,cluster):
 
 
 def main():
+    global F, DESIGN
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--test-dir',type=Path,default=F)
+    parser.add_argument('--design',type=Path,default=DESIGN)
+    parser.add_argument('--include-later-training',action='store_true')
+    args=parser.parse_args()
+    F,DESIGN=args.test_dir,args.design
     manifest=json.loads((F/'manifest.json').read_text())
     if manifest['design_sha256'] != hashlib.sha256(DESIGN.read_bytes()).hexdigest():
         raise ValueError('Design changed after collection; disclose and reconcile before scoring')
     train_market=pd.read_parquet(P/'ingame_market_minute.parquet')
     test_market=pd.read_parquet(F/'market_minute.parquet')
-    train_market=exact_game_minutes(train_market,pd.read_csv(P/'ingame_market_checks.csv'))
+    train_checks=pd.read_csv(P/'ingame_market_checks.csv')
+    if args.include_later_training:
+        train_market=pd.concat([train_market,pd.read_parquet(P/'final_social/market_minute.parquet')],ignore_index=True)
+        train_checks=pd.concat([train_checks,pd.read_csv(P/'final_social/collection_checks.csv')],ignore_index=True)
+    train_market=exact_game_minutes(train_market,train_checks)
     test_market=exact_game_minutes(test_market,pd.read_csv(F/'collection_checks.csv'))
     if set(train_market.slug)&set(test_market.slug):
         raise ValueError('Training/test games overlap')
     train_social=pd.read_parquet(P/'ingame_bluesky_minute.parquet')
     test_social=pd.read_parquet(F/'bluesky_minute.parquet')
     train_games=load_games(P/'markets.csv')
+    train_posts=pd.read_parquet(P/'ingame_bluesky_posts.parquet')
+    if args.include_later_training:
+        train_social=pd.concat([train_social,pd.read_parquet(P/'final_social/bluesky_minute.parquet')],ignore_index=True)
+        train_games=pd.concat([train_games,load_games(P/'final_social/selected_games.csv')],ignore_index=True)
+        train_posts=pd.concat([train_posts,pd.read_parquet(P/'final_social/bluesky_posts.parquet')],ignore_index=True)
     test_games=load_games(F/'selected_games.csv')
     if train_market.minute.max()>=test_market.minute.min():
         raise ValueError('Test data are not strictly later than training')
@@ -99,7 +116,7 @@ def main():
     for timing in ('pilot_sort_time','both_timestamps_confirmed'):
         a,b=train_social,test_social
         if timing=='both_timestamps_confirmed':
-            a=conservative_social(a,pd.read_parquet(P/'ingame_bluesky_posts.parquet'),train_games)
+            a=conservative_social(a,train_posts,train_games)
             b=conservative_social(b,pd.read_parquet(F/'bluesky_posts.parquet'),test_games)
         train=ingame.build_panel(train_market,a)
         test=ingame.build_panel(test_market,b)
@@ -163,7 +180,7 @@ def main():
     summary.to_csv(F/'heldout_summary.csv',index=False)
     (F/'evaluation_manifest.json').write_text(json.dumps({'design_sha256':manifest['design_sha256'],
         'training_games':train_market.slug.nunique(),'test_games':test_market.slug.nunique(),
-        'training':'original eight only; no tuning or retraining on test',
+        'training':'all designated earlier games only; no tuning or retraining on test',
         'boundary_correction':'exclude final partial minute using exact ESPN final timestamps; pre-correction artifacts retained separately',
         'bootstrap':'10000 draws seed473; game and date cluster sensitivity; repeated-team dependence unresolved',
         'status':'later-game outcomes now evaluated; further changes are post-test exploratory'},indent=2))

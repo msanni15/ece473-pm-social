@@ -5,6 +5,7 @@ Run python scripts/collect_final_social.py; reruns resume successful caches.
 """
 import hashlib
 import gzip
+import argparse
 import json
 import sys
 from pathlib import Path
@@ -44,15 +45,26 @@ def discover(design):
 
 
 def main():
+    global OUT, DESIGN
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--output',type=Path,default=OUT)
+    parser.add_argument('--design',type=Path,default=DESIGN)
+    args=parser.parse_args()
+    OUT,DESIGN=args.output,args.design
     RAW.mkdir(parents=True, exist_ok=True)
     OUT.mkdir(parents=True, exist_ok=True)
     design = json.loads(DESIGN.read_text())
     apilog.LOGS = RAW / 'request_logs'
     polymarket.RAW, espn.RAW = RAW / 'polymarket', RAW / 'espn'
     candidates = polymarket.candidate_table(discover(design))
+    lo,hi=design['test_dates_inclusive']
+    candidates=candidates[candidates.game_date_local.between(lo,hi)]
     candidates = candidates.drop_duplicates('slug').sort_values(['game_start_utc','slug'])
     valid = candidates.exclusion.isna()
-    chosen = candidates[valid].head(design['n_test_games_requested']).copy()
+    if design.get('selection_mode')=='per_day':
+        chosen=candidates[valid].groupby('game_date_local',sort=True).head(design['max_per_day']).copy()
+    else:
+        chosen = candidates[valid].head(design['n_test_games_requested']).copy()
     chosen['selected'] = True
     candidates.to_csv(OUT / 'candidate_games.csv', index=False)
     chosen.to_csv(OUT / 'selected_games.csv', index=False)
