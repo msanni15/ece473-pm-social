@@ -1,0 +1,17 @@
+team,query,kind,n_reviewed,n_relevant,approved,notes
+bkn,"""Brooklyn Nets""",canonical,0,0,True,Existing Milestone I query; no optional nickname added
+bos,Celtics,canonical,0,0,True,Existing Milestone I query; no optional nickname added
+cha,"""Charlotte Hornets""",canonical,0,0,True,Existing Milestone I query; no optional nickname added
+chi,"""Chicago Bulls""",canonical,0,0,True,Existing Milestone I query; no optional nickname added
+cle,Cavaliers,canonical,0,0,True,Existing Milestone I query; no optional nickname added
+den,Nuggets,canonical,0,0,True,Existing Milestone I query; no optional nickname added
+hou,"""Houston Rockets""",canonical,0,0,True,Existing Milestone I query; no optional nickname added
+mem,Grizzlies,canonical,0,0,True,Existing Milestone I query; no optional nickname added
+mil,"""Milwaukee Bucks""",canonical,0,0,True,Existing Milestone I query; no optional nickname added
+min,Timberwolves,canonical,0,0,True,Existing Milestone I query; no optional nickname added
+nyk,Knicks,canonical,0,0,True,Existing Milestone I query; no optional nickname added
+okc,"""OKC Thunder""",canonical,0,0,True,Existing Milestone I query; no optional nickname added
+phi,76ers,canonical,0,0,True,Existing Milestone I query; no optional nickname added
+sas,"""San Antonio Spurs""",canonical,0,0,True,Existing Milestone I query; no optional nickname added
+tor,Raptors,canonical,0,0,True,Existing Milestone I query; no optional nickname added
+uta,"""Utah Jazz""",canonical,0,0,True,Existing Milestone I query; no optional nickname added

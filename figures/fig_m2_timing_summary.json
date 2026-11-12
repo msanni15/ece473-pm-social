@@ -1,0 +1,19 @@
+{
+  "scoring": {
+    "candidate_events": 911,
+    "complete_events": 911,
+    "excluded_incomplete": 0,
+    "games": 8
+  },
+  "jumps": {
+    "candidate_events": 185,
+    "complete_events": 185,
+    "excluded_incomplete": 0,
+    "games": 8
+  },
+  "injury_candidates": {
+    "side_matched_rows": 92,
+    "unique_post_game_pairs": 64,
+    "unique_post_game_pairs_in_game": 26
+  }
+}
