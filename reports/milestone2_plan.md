@@ -42,7 +42,7 @@ file you don't own, ask its owner.
 | | **Alicia** | **Partner** |
 |---|---|---|
 | Branch | `alicia/market-models` | `partner/bluesky-ingame` |
-| Files | `src/pmsocial/polymarket.py`, `espn.py`, `ingame.py`, `ingame_models.py`, `scripts/run_ingame_market.py`, `scripts/run_ingame_analysis.py`, `tests/test_ingame_market.py`; shared files `config.py`, `requirements.txt`, `README.md` | `src/pmsocial/bluesky_ingame.py`, `timing.py`, `scripts/run_ingame_social.py`, `scripts/run_timing.py`, `tests/test_ingame_social.py` |
+| Files | `src/pmsocial/polymarket.py`, `espn.py`, `ingame.py`, `ingame_models.py`, `ingame_plots.py`, `scripts/run_ingame_market.py`, `scripts/run_ingame_analysis.py`, `tests/test_ingame_market.py`; shared files `config.py`, `requirements.txt`, `README.md` | `src/pmsocial/bluesky_ingame.py`, `timing.py`, `scripts/run_ingame_social.py`, `scripts/run_timing.py`, `tests/test_ingame_social.py` |
 | Produces (`data/processed/`) | `ingame_events.parquet`, `ingame_market_minute.parquet`, `ingame_trades.parquet`, `ingame_panel.parquet` | `ingame_bluesky_posts.parquet`, `ingame_bluesky_minute.parquet` |
 
 Merge into `main` only through pull requests.
@@ -99,8 +99,8 @@ Deduplicate on (`slug`, `side`, `uri`).
 
 | column | meaning |
 |---|---|
-| `p_home` | Polymarket home-win price for the minute: the volume-weighted average trade price, or the CLOB 1-minute snapshot when the minute has no trade, else carried forward. Trades exist in 96–100% of in-game minutes; CLOB snapshots alone have gaps of up to 6 minutes. |
-| `p_clob` | the CLOB snapshot series, kept for robustness checks |
+| `p_home` | Polymarket home-win price at the **end** of the minute: the last trade price, or the CLOB 1-minute snapshot when the minute has no trade, else carried forward. Trades exist in 96–100% of in-game minutes; CLOB snapshots alone have gaps of up to 6 minutes. |
+| `p_vwap`, `p_clob` | the within-minute average trade price and the CLOB snapshot series, kept for robustness checks. **Do not use them for timing:** both lag the minute's scoring (see "Findings so far"). |
 | `price_source` | `trades` / `clob` / `ffill` |
 | `logit_p` | log-odds of `p_home`, with p clipped to [0.01, 0.99] |
 | `price_observed` | False if the price was carried forward from an earlier minute |
@@ -111,6 +111,23 @@ Deduplicate on (`slug`, `side`, `uri`).
 | `sec_remaining` | game time remaining |
 | `espn_wp_home` | ESPN's home win probability at the end of the minute |
 | `in_game` | True from tip-off to the final buzzer |
+
+## Findings so far (market side, Nov 11)
+- **The market absorbs a basket within about 10 seconds.** Across 911 scoring plays in the 8 games, the
+  price moves about 3 percentage points toward the scorer. About 2.3 points of that come within 5 seconds of
+  ESPN's play time, and the move is complete by about 30 seconds. See
+  `figures/fig_m2_scoring_reaction.png` and `data/processed/ingame_scoring_reaction.csv`.
+- **With end-of-minute prices, nothing beats "no change".** B1 (market + game state) has the same RMSE as
+  B0 at 1 minute (−0.04%, Diebold–Mariano p = 0.97) and is slightly worse at 5 minutes. Within-minute
+  average prices make B1 look 17% better, but that is a timing artifact: the average lags baskets scored
+  late in the minute.
+- **What this means for Bluesky.** Posts arrive at about one per minute per team, so Bluesky cannot lead
+  the market on scoring plays. Any value has to come from information that is not in the score, such as
+  injuries or lineup news. The injury-keyword measure and the timing analysis are therefore central.
+- **For task 5 (timing analysis):** the market's own reaction to scoring plays at second resolution is
+  already done (above). Focus the event studies on **Bluesky's** reaction: posts per minute around scoring
+  plays and big price jumps, and the lead–lag cross-correlation. You can overlay `p_home` from
+  `ingame_market_minute.parquet`.
 
 ## Partner's tasks
 1. **Setup.**

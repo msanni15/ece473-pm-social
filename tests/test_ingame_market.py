@@ -44,11 +44,12 @@ def test_trade_prices_are_home_probability_and_flow_signed(patched):
     assert tr.flow_home.tolist() == pytest.approx([6.0, -3.0, 1.0])
 
 
-def test_minute_price_vwap_then_clob_then_ffill(patched):
+def test_minute_price_last_trade_then_clob_then_ffill(patched):
     mm, _ = ingame.market_minutes(GAME, patched, ingame.game_trades(GAME))
     row = mm.set_index("minute")
     m20, m21, m22, m23 = (pd.Timestamp(f"2026-10-22 23:{x}Z") for x in ("20", "21", "22", "23"))
-    assert row.loc[m20, "p_home"] == pytest.approx((10 * 0.6 + 10 * 0.7) / 20)  # share-weighted
+    assert row.loc[m20, "p_home"] == pytest.approx(0.70)  # end of minute, not the average
+    assert row.loc[m20, "p_vwap"] == pytest.approx((10 * 0.6 + 10 * 0.7) / 20)  # share-weighted
     assert row.loc[m21, "price_source"] == "clob" and row.loc[m21, "p_home"] == pytest.approx(0.66)
     assert row.loc[m22, "price_source"] == "trades"
     assert row.loc[m23, "price_source"] == "ffill" and not row.loc[m23, "price_observed"]

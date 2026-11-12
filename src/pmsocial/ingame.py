@@ -2,11 +2,14 @@
 
 Row `minute` covers [minute, minute + 1 min) in UTC. Values describe the minute (or its end)
 and use only information time-stamped inside or before it:
-  p_home       volume-weighted average trade price of the minute, as the home-win probability.
+  p_home       last trade price of the minute, as the home-win probability.
                CLOB 1-minute price points are irregular (gaps up to ~6 min in-game, verified
                2026-11-11) while trades occur in ~97-99% of in-game minutes, so trades are the
                main source; the minute's CLOB point is used when there is no trade, then
-               forward fill (price_source = trades / clob / ffill). p_clob keeps the CLOB series.
+               forward fill (price_source = trades / clob / ffill). The END-of-minute price
+               matters: the market moves within 5-10 s of a scoring play, so a within-minute
+               average (p_vwap) or a mid-minute CLOB point (p_clob) lags the minute's scoring
+               and makes next-minute changes spuriously predictable from it.
   n_trades,    taker trades / USDC notional (size * price) in the minute
   volume_usd
   flow_home    signed USDC: buying home (or selling away) is +, selling home (or buying away) is -
@@ -62,13 +65,16 @@ def market_minutes(game: pd.Series, plays: pd.DataFrame, trades: pd.DataFrame) -
         ph = polymarket.fetch_price_history(tok, start, end, fidelity=1)
         ph = ph[(ph.ts >= start) & (ph.ts < end)]
         snaps[side] = ph.groupby(ph.ts.dt.floor("min")).p.last()
+    trades = trades.sort_values("ts", kind="stable")
     g = trades.assign(minute=trades.ts.dt.floor("min"), w=trades["size"] * trades.price_home).groupby("minute")
-    vwap = (g.w.sum() / g["size"].sum()).reindex(grid).to_numpy()
+    last = g.price_home.last().reindex(grid).to_numpy()
+    vwap = (g.w.sum() / g["size"].sum()).reindex(grid)
     clob = snaps["home"].reindex(grid).to_numpy()
+    out["p_vwap"] = vwap.ffill().to_numpy()
     out["p_clob"] = pd.Series(clob).ffill().to_numpy()
-    out["price_source"] = np.where(~np.isnan(vwap), "trades", np.where(~np.isnan(clob), "clob", "ffill"))
+    out["price_source"] = np.where(~np.isnan(last), "trades", np.where(~np.isnan(clob), "clob", "ffill"))
     out["price_observed"] = out.price_source != "ffill"
-    out["p_home"] = pd.Series(np.where(~np.isnan(vwap), vwap, clob)).ffill().to_numpy()
+    out["p_home"] = pd.Series(np.where(~np.isnan(last), last, clob)).ffill().to_numpy()
     out["logit_p"] = logit(out.p_home)
 
     out["n_trades"] = g.size().reindex(grid).fillna(0).to_numpy()
@@ -110,6 +116,33 @@ def market_minutes(game: pd.Series, plays: pd.DataFrame, trades: pd.DataFrame) -
         "trades_unknown_asset": int(trades.token_side.isna().sum()),
     }
     return out, checks
+
+
+REACTION_OFFSETS = (-60, -30, -10, 0, 5, 10, 20, 30, 60, 120)
+
+
+def scoring_reaction(trades: pd.DataFrame, events: pd.DataFrame, offsets=REACTION_OFFSETS) -> pd.DataFrame:
+    """Price move toward the scoring team around each scoring play, from second-level trades.
+
+    For play time T (ESPN wall clock) the reference is the last trade price before T-60s; the
+    value at offset s is the last trade price at or before T+s, signed so + favours the scorer.
+    """
+    ev = events[events.scoring_play & events.ts.notna()]
+    rows = []
+    for slug, e in ev.groupby("slug"):
+        t = trades[trades.slug == slug].sort_values("ts", kind="stable")
+        ts, p = t.ts.dt.tz_convert(None).to_numpy(), t.price_home.to_numpy()
+        for r in e.assign(ts=e.ts.dt.tz_convert(None)).itertuples():
+            i0 = np.searchsorted(ts, (r.ts - pd.Timedelta(seconds=60)).to_datetime64(), side="right") - 1
+            if i0 < 0:
+                continue
+            sign = 1 if r.scoring_side == "home" else -1
+            row = {"slug": slug, "play_id": r.play_id, "points": r.points}
+            for s in offsets:
+                i = np.searchsorted(ts, (r.ts + pd.Timedelta(seconds=s)).to_datetime64(), side="right") - 1
+                row[s] = sign * (p[i] - p[i0])
+            rows.append(row)
+    return pd.DataFrame(rows)
 
 
 def build_panel(market: pd.DataFrame, bsky: pd.DataFrame | None) -> pd.DataFrame:
