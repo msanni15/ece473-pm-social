@@ -16,6 +16,12 @@ DATA_API = "https://data-api.polymarket.com"
 BSKY_SEARCH = "https://api.bsky.app/xrpc/app.bsky.feed.searchPosts"
 GDELT_FILES = "https://data.gdeltproject.org/gdeltv2"
 GDELT_DOC_API = "https://api.gdeltproject.org/api/v2/doc/doc"
+ESPN_API = "https://site.api.espn.com/apis/site/v2/sports/basketball/nba"
+
+# Milestone II in-game window per game: [game_start - BEFORE, game_start + AFTER), 1-minute rows.
+INGAME_BEFORE_MIN = 120
+INGAME_AFTER_MIN = 210
+PILOT_GAMES = ("nba-cle-phi-2026-10-22", "nba-nyk-bos-2026-10-23", "nba-mem-uta-2026-10-26")
 
 # Pilot sample window: opening week of the 2026-27 NBA regular season.
 SAMPLE_GAME_DATES = ("2026-10-21", "2026-10-26")
