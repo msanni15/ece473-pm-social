@@ -1,0 +1,18 @@
+{
+  "status": "Frozen replication design before collection/evaluation of November games; internal freeze, not external preregistration",
+  "test_dates_inclusive": ["2026-11-01", "2026-11-10"],
+  "selection_mode": "per_day",
+  "max_per_day": 4,
+  "n_test_games_requested": 34,
+  "selection": "Within each available date, first four valid closed NBA moneyline games by scheduled tip and slug. Use all if fewer than four; no backfilling or outcome/activity/volume thresholds.",
+  "metadata_selection": "Existing candidate metadata yields 34 games across nine dates; no candidate games available November 3; November 5 has two. This is the API-discovered sample, not proof of exhaustive listings.",
+  "training": "The original eight and October 28-30 later sample (32 total). All features/scalers/estimators fit on those games only; no tuning on November outcomes.",
+  "forward_price": "Next-minute signed log-odds change; original market baseline, counts-only augmentation, full original social augmentation. Five-minute price sensitivity.",
+  "forward_volume": "Next-five-minute log(1+USDC volume); persistence and market baseline versus social augmentations. Fifteen-minute sensitivity.",
+  "reverse_attention": "Next-five-minute log(1+sum of query-side post counts), posting-history/game-state baseline versus price-only and broader market augmentations. Fifteen-minute sensitivity.",
+  "estimators": "Ridge alpha=1 primary, OLS sensitivity, training-only standardization. Nonnegative volume/attention predictions clipped to zero.",
+  "timing": "Original query sort-time convention plus conservative both-timestamps-confirmed subset for forward experiments. Exclude final partial minute using exact ESPN final timestamps in all tasks.",
+  "metrics": "Pooled and equal-game RMSE, MAE, paired per-game errors; game and date cluster bootstrap sensitivity intervals, seed473 and 10000 draws.",
+  "claims": "Observational prediction and replication; no causal or executable-profit claim. Repeated teams and multiple endpoints constrain inference. Report every specification rather than select a winner.",
+  "quality": "Human relevance/novelty review and injury-source verification remain outstanding. No unvalidated cleaned-news feature is introduced as ground truth."
+}

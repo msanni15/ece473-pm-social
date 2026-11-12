@@ -1,0 +1,19 @@
+{
+  "seed": 473,
+  "unique_ingame_posts": 951,
+  "review_sample": 100,
+  "sampling": "round-robin across games after within-game shuffling; not volume weighted",
+  "sample_by_game": {
+    "nba-cha-bkn-2026-10-21": 5,
+    "nba-chi-mil-2026-10-23": 14,
+    "nba-cle-phi-2026-10-22": 14,
+    "nba-den-okc-2026-10-22": 14,
+    "nba-hou-sas-2026-10-23": 13,
+    "nba-mem-uta-2026-10-26": 14,
+    "nba-nyk-bos-2026-10-23": 13,
+    "nba-tor-min-2026-10-25": 13
+  },
+  "index_after_original_bin_end": 22,
+  "negative_index_delay": 57,
+  "review_status": "unlabelled; outcome-blind human review pending"
+}

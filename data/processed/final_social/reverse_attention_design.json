@@ -1,0 +1,11 @@
+{
+  "status": "exploratory reverse-direction analysis after forward outcomes were inspected",
+  "target": "log(1 + sum of home/away query matches in next 5 or 15 minutes)",
+  "training": "original eight games only; scaling/fitting never uses later games",
+  "baseline": "own social history plus score and recent scoring/time remaining",
+  "price_increment": "absolute current and past-five-minute log-odds moves",
+  "market_increment": "price increments plus recent trading activity",
+  "estimators": "ridge alpha=1, OLS sensitivity; nonnegative predictions",
+  "claim_limit": "predictive association, not proof market prices cause posting; only three test dates and repeated teams",
+  "fresh_replication": "required before confirmatory claims"
+}

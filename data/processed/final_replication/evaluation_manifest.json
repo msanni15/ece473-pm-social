@@ -1,0 +1,9 @@
+{
+  "design_sha256": "e50739f34440d8d22d7afaaf60a5e85802f375b9361d72d2c5c82dcda13166c1",
+  "training_games": 32,
+  "test_games": 34,
+  "training": "all designated earlier games only; no tuning or retraining on test",
+  "boundary_correction": "exclude final partial minute using exact ESPN final timestamps; pre-correction artifacts retained separately",
+  "bootstrap": "10000 draws seed473; game and date cluster sensitivity; repeated-team dependence unresolved",
+  "status": "later-game outcomes now evaluated; further changes are post-test exploratory"
+}

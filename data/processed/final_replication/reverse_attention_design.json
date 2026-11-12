@@ -1,0 +1,14 @@
+{
+  "status": "frozen replication of an exploratory reverse-direction hypothesis",
+  "target": "log(1 + sum of home/away query matches in next 5 or 15 minutes)",
+  "training_games": 32,
+  "test_games": 34,
+  "training": "designated earlier games only; scaling/fitting never uses test games",
+  "baseline": "own social history plus score and recent scoring/time remaining",
+  "price_increment": "absolute current and past-five-minute log-odds moves",
+  "market_increment": "price increments plus recent trading activity",
+  "estimators": "ridge alpha=1, OLS sensitivity; nonnegative predictions",
+  "claim_limit": "predictive association, not proof market prices cause posting; only three test dates and repeated teams",
+  "fresh_replication": "interpret multiple endpoints and shared teams/dates cautiously",
+  "design_sha256": "e50739f34440d8d22d7afaaf60a5e85802f375b9361d72d2c5c82dcda13166c1"
+}
