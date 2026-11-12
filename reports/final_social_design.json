@@ -1,0 +1,20 @@
+{
+  "status": "Frozen prospective-analysis specification for retrospective, previously unanalyzed games; not external preregistration",
+  "development_games": "The original eight games, October 21-26, 2026",
+  "test_dates_inclusive": ["2026-10-28", "2026-11-10"],
+  "selection": "First 24 valid NBA moneyline games in chronological scheduled-tip order, breaking ties by slug; no volume, price-movement, or social-activity thresholds",
+  "n_test_games_requested": 24,
+  "no_replacements": "Record collection/coverage exclusions; never replace a game based on forecasts or post counts",
+  "training": "Fit only on the original eight games. No retraining, hyperparameter tuning, or feature selection using test outcomes.",
+  "primary_price": "Next-minute signed home-team log-odds change; original B0 and B1 versus B1 plus all original social features",
+  "secondary_activity": "Next-five-minute log(1+USDC volume); persistence, market baseline, and baseline plus all original social features",
+  "sensitivity_checks": ["counts-only social features", "OLS versus ridge alpha=1", "five-minute price horizon", "fifteen-minute volume horizon", "exclude posts not indexed by end of their original minute"],
+  "target_alignment": "Features through end of minute t; future targets t+1..t+h, all inside actual game-time window",
+  "price_definition": "End-of-minute last trade, then CLOB fallback, then flagged forward fill; logit clipped to [0.01,0.99]",
+  "window": "Scheduled tip minus 120 minutes through plus 210 minutes; exclude from primary test if actual ESPN final lies outside the collected window",
+  "estimators": ["ridge alpha=1 with training-only standardization", "OLS sensitivity"],
+  "primary_metric": "Pooled held-out RMSE; also report equal-game RMSE, MAE, and per-game errors",
+  "uncertainty": "Whole-game bootstrap and per-game paired losses; account for repeated teams/date clusters in interpretation; no minute-independence claims",
+  "claim_limit": "Predictive associations, not causal effects or proof of universal market efficiency. No guaranteed positive result.",
+  "data_quality": "Outcome-blind relevance/novelty review remains required for content-quality claims; preserve original broad-keyword features for the unchanged comparison."
+}
