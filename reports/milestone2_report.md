@@ -17,7 +17,7 @@ Following the feedback on Milestone I, we moved the analysis **inside the games*
 **Main findings.**
 1. **The market absorbs game events within seconds.** After a basket, the Polymarket price moves about 3 percentage points toward the scoring team, most of it within 5–10 seconds (Section 3).
 2. **Nothing beats "no change" one minute ahead.** Neither the market's own recent history nor the score adds predictive power once prices are measured at the end of each minute.
-3. **Bluesky adds no forecasting value.** None of the four attention measures improves out-of-sample forecasts at 1 or 5 minutes, in the 3 pilot games or in all 8 (Section 4).
+3. **We found no detectable forecasting gain from Bluesky.** None of the four attention measures measurably improves out-of-sample forecasts at 1 or 5 minutes, in the 3 pilot games or in all 8 (Section 4).
 
 Bluesky activity is sparse: an average of 0.44 posts per minute per team, and none at all in most minutes. The market prices events within seconds, faster than minute-level Bluesky counts can capture.
 
@@ -60,12 +60,14 @@ For each of the 911 scoring plays, we compare the price at moments around ESPN's
 
 The price barely moves beforehand: about 0.3 points from 30 to 10 seconds before the play. By 5 seconds after the play it has moved 2.3 points, by 10 seconds 2.65, and it levels off at about 3 points within 30 seconds.
 
-The small rise before ESPN's timestamp is likely ESPN logging plays a few seconds late. A market that absorbs a basket within seconds leaves nothing for minute-level information to predict about scoring.
+The small rise before ESPN's timestamp may reflect ESPN recording plays a few seconds late. A market that absorbs a basket within seconds leaves nothing for minute-level information to predict about scoring.
 
 ![Figure 2. Pilot games: Polymarket's in-game win probability against ESPN's model (top) and Bluesky posts per minute (bottom).](../figures/fig_m2_pilot_games.png)
 
 ## 4. Main results
 Each model is trained on all games but one and tested on the held-out game, repeated for every game. **RMSE** is the average over held-out games; lower is better. In brackets: the change in pooled RMSE against the comparison model (B0 for B1, B1 for the Bluesky models), the Diebold–Mariano p-value, and the number of held-out games where the model was better. The sample is 1,163 in-game minutes (442 in the pilot).
+
+The RMSE values are averages over the held-out games, while the percentage changes and p-values are computed over all held-out minutes pooled. We test on held-out games, not forward in time.
 
 **All 8 games**
 
@@ -95,10 +97,10 @@ Each model is trained on all games but one and tested on the held-out game, repe
 
 **Interpretation:**
 - **Market and game-state information does not predict the next minute.** On all 8 games, B1 equals B0 (−0.04%, p = 0.97). The market has already absorbed the score and its own recent moves.
-- **The pilot shows overfitting.** With only two training games per fold, B1 is significantly *worse* than "no change".
-- **Bluesky adds nothing measurable.** No attention measure significantly improves on B1 at either horizon. The largest 5-minute gain is 0.44% (p = 0.21). The home/away imbalance is significantly *worse* at 1 minute.
-- **Adding all Bluesky features at once** hurts most, which is consistent with fitting noise.
-- **Overall:** with these 8 games, Bluesky attention contains no forecasting information about Polymarket's next price moves beyond what the price already reflects.
+- **The pilot shows overfitting.** With only two training games per fold, B1 is significantly *worse* than "no change" (p = 0.03 at 1 minute, 0.02 at 5 minutes).
+- **No Bluesky measure measurably improves the forecasts.** No attention measure significantly improves on B1 at either horizon. The largest 5-minute gain is 0.44% (p = 0.21). The home/away imbalance is nominally worse at 1 minute (Diebold–Mariano p = 0.01), but a game-level test corrected for the 10 feature sets we tried gives p = 0.23.
+- **Adding all Bluesky features at once** hurts most at 5 minutes and in the pilot, which is consistent with fitting noise.
+- **Overall:** with these 8 games, we find no evidence that Bluesky attention improves forecasts of Polymarket's next price moves beyond what the price already reflects. With only 8 games, small effects could still go undetected.
 
 ## 5. Robustness
 - **Horizon:** the conclusions are the same at 1 and 5 minutes.
@@ -144,7 +146,7 @@ Paired whole-game bootstrapping (10,000 draws, seed 473) provides sensitivity in
 
 
 ## 8. Limitations
-1. **Small sample.** There are 8 games and 1,163 model minutes. Effects smaller than a fraction of a percent of RMSE cannot be detected.
+1. **Small sample.** There are 8 games and 1,163 model minutes, so small effects could go undetected. We have not run a formal power analysis.
 2. **Sparse Bluesky signal.** Fewer than one post per minute per team, and only part of it about the game. Bluesky is much smaller than X/Twitter, where most real-time sports discussion happens.
 3. **Minute resolution for Bluesky.** The market reacts within seconds, so information Bluesky shares *within* the same minute as a market move cannot be ordered at this resolution.
 4. **Timestamps.** ESPN's play times may lag the actual events by a few seconds, and Bluesky timestamps record when a post was created or indexed, not when the poster learned the information.
