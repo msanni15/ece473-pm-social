@@ -3,8 +3,9 @@
 APIs (no authentication required, verified 2026-10-27):
   Gamma  /events             event + market metadata
   CLOB   /prices-history     per-token price time series
-  Data   /trades             executed trades; offset pagination stops near 5k rows,
-                             so we page backward in time with the `end` parameter.
+  Data   /v2/trades          executed trades, newest first, cursor pagination. Time
+                             filters are ignored, so we page back past the start time.
+                             (/trades v1 was retired with HTTP 410 by 2026-11-11.)
 """
 import json
 import re
@@ -102,16 +103,17 @@ def candidate_table(events: list[dict]) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------- prices
-def fetch_price_history(token_id: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
-    """Hourly-fidelity price points for one outcome token, chunked to stay under the span limit."""
-    name = f"prices_{token_id}.json"
+def fetch_price_history(token_id: str, start: pd.Timestamp, end: pd.Timestamp,
+                        fidelity: int = 60) -> pd.DataFrame:
+    """Price points for one outcome token at `fidelity` minutes, chunked to stay under the span limit."""
+    name = f"prices_{token_id}.json" if fidelity == 60 else f"prices_f{fidelity}_{token_id}.json"
     pts = _load(name)
     if pts is None:
         pts, t0, t1 = [], int(start.timestamp()), int(end.timestamp())
-        step = 5 * 86400
+        step = 5 * 86400 if fidelity >= 60 else 6 * 3600
         for s in range(t0, t1, step):
             res = apilog.get(f"{CLOB_API}/prices-history", {
-                "market": token_id, "startTs": s, "endTs": min(s + step, t1), "fidelity": 60,
+                "market": token_id, "startTs": s, "endTs": min(s + step, t1), "fidelity": fidelity,
             }, source="polymarket_clob", min_interval=0.2, count_fn=lambda r: len(r.get("history", [])))
             if res is None:
                 raise RuntimeError(f"price history failed for token {token_id}")
@@ -123,34 +125,46 @@ def fetch_price_history(token_id: str, start: pd.Timestamp, end: pd.Timestamp) -
 
 
 # ---------------------------------------------------------------- trades
+# v2 field names -> the v1 names the rest of the pipeline uses. Profile fields are not kept.
+V2_FIELDS = {"transaction_hash": "transactionHash", "token_id": "asset", "condition_id": "conditionId",
+             "outcome_index": "outcomeIndex", "side": "side", "size": "size", "price": "price",
+             "timestamp": "timestamp", "outcome": "outcome"}
+
+
 def fetch_trades(condition_id: str, start: pd.Timestamp, end: pd.Timestamp) -> pd.DataFrame:
-    """All taker trades for a market in [start, end], paging backward with `end`."""
-    name = f"trades_{condition_id}.json"
-    trades = _load(name)
-    if trades is None:
-        trades, cursor_end, t0 = [], int(end.timestamp()), int(start.timestamp())
-        while cursor_end > t0:
-            page = apilog.get(f"{DATA_API}/trades", {
-                "market": condition_id, "limit": 1000, "end": cursor_end, "start": t0,
-            }, source="polymarket_data", min_interval=0.2, count_fn=len)
-            if page is None:
+    """All taker trades for a market in [start, end].
+
+    The full history back to `start` is cached once per market (trades_v2_{id}.json), so
+    pregame and in-game calls share one download.
+    """
+    name = f"trades_v2_{condition_id}.json"
+    cache = _load(name)
+    t0 = int(start.timestamp())
+    if cache is None or (cache["paged_back_to"] > t0 and not cache["complete"]):
+        trades, cursor = [], None
+        while True:
+            params = {"condition_id": condition_id, "limit": 500}
+            if cursor:
+                params["cursor"] = cursor
+            res = apilog.get(f"{DATA_API}/v2/trades", params, source="polymarket_data",
+                             min_interval=0.2, count_fn=lambda r: len(r.get("data", [])))
+            if res is None:
                 raise RuntimeError(f"trades request failed for {condition_id}")
-            if not page:
-                break
+            page = [{k: t.get(k) for k in V2_FIELDS} for t in res.get("data", [])]
             trades.extend(page)
-            oldest = min(t["timestamp"] for t in page)
-            if len(page) < 1000:
+            more = res.get("pagination", {}).get("has_more", False)
+            if not page or not more or min(t["timestamp"] for t in page) < t0:
                 break
-            # Re-request the boundary second (inclusive end); duplicates are removed below.
-            if oldest == cursor_end:
-                raise RuntimeError("more than 1000 trades in one second; cannot paginate")
-            cursor_end = oldest
-        _save(name, trades)
-    df = pd.DataFrame(trades)
+            cursor = res["pagination"]["next_cursor"]
+        cache = {"paged_back_to": min((t["timestamp"] for t in trades), default=t0),
+                 "complete": not more, "trades": trades}
+        _save(name, cache)
+    df = pd.DataFrame(cache["trades"]).rename(columns=V2_FIELDS)
     if df.empty:
         return df
     df = df.drop_duplicates(["transactionHash", "asset", "size", "price", "timestamp", "side"])
     df["ts"] = pd.to_datetime(df["timestamp"], unit="s", utc=True)
+    df = df[(df.ts >= start) & (df.ts <= end)]
     return df.sort_values("ts").reset_index(drop=True)
 
 
