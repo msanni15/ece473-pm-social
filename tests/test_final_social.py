@@ -40,3 +40,12 @@ def test_espn_clippers_name_alias_preserves_home_away(monkeypatch):
         {'homeAway':'away','team':{'displayName':'Los Angeles Lakers'}}]}]}
     monkeypatch.setattr(espn,'_cached',lambda *a,**kw:{'events':[event]})
     assert espn.find_event(game)['id']=='test'
+
+
+def test_exact_boundaries_exclude_after_buzzer_partial_minute():
+    t=pd.date_range('2026-10-23T23:00:00Z',periods=4,freq='min')
+    market=pd.DataFrame({'slug':'test','minute':t,'in_game':True})
+    checks=pd.DataFrame({'slug':['test'],'tip_utc':['2026-10-23T23:00:20Z'],
+                         'final_play_utc':['2026-10-23T23:02:10Z']})
+    corrected=evaluation.exact_game_minutes(market,checks)
+    assert corrected.in_game.tolist()==[True,True,False,False]

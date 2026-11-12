@@ -51,6 +51,23 @@ def load_games(path):
     return g
 
 
+def exact_game_minutes(market, checks):
+    """A forecast cutoff must be after actual tip and no later than final play.
+
+    The original inclusive minute flag admits the final partial minute. Exclude
+    that minute because its last trade can occur after the final buzzer. This is
+    a timing correction, not a change of features or estimator based on scores.
+    """
+    checks=checks.dropna(subset=['tip_utc','final_play_utc']).set_index('slug')
+    tip=pd.to_datetime(market.slug.map(checks.tip_utc),utc=True)
+    final=pd.to_datetime(market.slug.map(checks.final_play_utc),utc=True)
+    if tip.isna().any() or final.isna().any():raise ValueError('Exact game boundaries missing')
+    out=market.copy()
+    cutoff=out.minute+pd.Timedelta(minutes=1)
+    out['in_game']=(cutoff>tip)&(cutoff<=final)
+    return out
+
+
 def paired_interval(losses,cluster):
     group = losses.groupby(cluster)[['a','b']].sum()
     rng=np.random.default_rng(473)
@@ -67,6 +84,8 @@ def main():
         raise ValueError('Design changed after collection; disclose and reconcile before scoring')
     train_market=pd.read_parquet(P/'ingame_market_minute.parquet')
     test_market=pd.read_parquet(F/'market_minute.parquet')
+    train_market=exact_game_minutes(train_market,pd.read_csv(P/'ingame_market_checks.csv'))
+    test_market=exact_game_minutes(test_market,pd.read_csv(F/'collection_checks.csv'))
     if set(train_market.slug)&set(test_market.slug):
         raise ValueError('Training/test games overlap')
     train_social=pd.read_parquet(P/'ingame_bluesky_minute.parquet')
@@ -145,6 +164,7 @@ def main():
     (F/'evaluation_manifest.json').write_text(json.dumps({'design_sha256':manifest['design_sha256'],
         'training_games':train_market.slug.nunique(),'test_games':test_market.slug.nunique(),
         'training':'original eight only; no tuning or retraining on test',
+        'boundary_correction':'exclude final partial minute using exact ESPN final timestamps; pre-correction artifacts retained separately',
         'bootstrap':'10000 draws seed473; game and date cluster sensitivity; repeated-team dependence unresolved',
         'status':'later-game outcomes now evaluated; further changes are post-test exploratory'},indent=2))
     print(comp[(comp.timing=='pilot_sort_time')&(comp.estimator=='ridge')].to_string(index=False))

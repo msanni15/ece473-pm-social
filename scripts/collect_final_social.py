@@ -4,6 +4,7 @@ Raw caches and processed artifacts are isolated from the Milestone II dataset.
 Run python scripts/collect_final_social.py; reruns resume successful caches.
 """
 import hashlib
+import gzip
 import json
 import sys
 from pathlib import Path
@@ -19,9 +20,9 @@ DESIGN = ROOT / 'reports/final_social_design.json'
 
 
 def discover(design):
-    path = RAW / 'gamma_later_events.json'
+    path = RAW / 'gamma_later_events.json.gz'
     if path.exists():
-        return json.loads(path.read_text())
+        return json.loads(gzip.decompress(path.read_bytes()))
     lo, hi = design['test_dates_inclusive']
     result = []
     for offset in range(0, 10000, 100):
@@ -38,7 +39,7 @@ def discover(design):
             break
     else:
         raise RuntimeError('Discovery pagination safety limit reached')
-    path.write_text(json.dumps(result))
+    path.write_bytes(gzip.compress(json.dumps(result).encode(),mtime=0))
     return result
 
 
@@ -92,7 +93,9 @@ def main():
               'selected_games':len(chosen),'collected_games':len(games),
               'minute_rows':len(minutes),'post_side_rows':len(posts),
               'both_sides_covered_minutes':int(minutes.bsky_ok.sum()),
-              'status':'collection only; no holdout model outcomes evaluated'}
+              'status':('collection refreshed; holdout outcomes were previously evaluated'
+                        if (OUT/'evaluation_manifest.json').exists()
+                        else 'collection only; no holdout model outcomes evaluated')}
     (OUT / 'manifest.json').write_text(json.dumps(manifest,indent=2))
     print(json.dumps(manifest,indent=2),flush=True)
 

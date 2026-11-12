@@ -1,0 +1,19 @@
+{
+  "status": "exploratory development; all eight games previously inspected",
+  "proposed_primary": "next-five-minute log(1 + total USDC volume)",
+  "secondary": "absolute log-odds endpoint movement",
+  "horizons_minutes": [
+    5,
+    15
+  ],
+  "estimators": [
+    "ridge alpha=1",
+    "OLS"
+  ],
+  "evaluation": "leave-one-game-out",
+  "features": "original baseline plus trailing horizon volume/magnitude; enhanced adds original social features",
+  "prediction_clipping": "nonnegative predictions for nonnegative targets",
+  "future_window": "t+1 through t+h, all required inside actual game-time minutes",
+  "fresh_holdout": "not yet collected or evaluated",
+  "inference": "exploratory whole-game checks; Holm across four social target/horizon comparisons per estimator"
+}
