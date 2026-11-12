@@ -1,0 +1,58 @@
+[
+  {
+    "slug": "nba-cha-bkn-2026-10-21",
+    "minutes": 330,
+    "minutes_ok": 330,
+    "posts_home": 17.0,
+    "posts_away": 19.0
+  },
+  {
+    "slug": "nba-chi-mil-2026-10-23",
+    "minutes": 330,
+    "minutes_ok": 330,
+    "posts_home": 35.0,
+    "posts_away": 34.0
+  },
+  {
+    "slug": "nba-cle-phi-2026-10-22",
+    "minutes": 330,
+    "minutes_ok": 330,
+    "posts_home": 261.0,
+    "posts_away": 140.0
+  },
+  {
+    "slug": "nba-den-okc-2026-10-22",
+    "minutes": 330,
+    "minutes_ok": 330,
+    "posts_home": 11.0,
+    "posts_away": 317.0
+  },
+  {
+    "slug": "nba-hou-sas-2026-10-23",
+    "minutes": 330,
+    "minutes_ok": 330,
+    "posts_home": 25.0,
+    "posts_away": 22.0
+  },
+  {
+    "slug": "nba-mem-uta-2026-10-26",
+    "minutes": 330,
+    "minutes_ok": 330,
+    "posts_home": 15.0,
+    "posts_away": 56.0
+  },
+  {
+    "slug": "nba-nyk-bos-2026-10-23",
+    "minutes": 330,
+    "minutes_ok": 330,
+    "posts_home": 289.0,
+    "posts_away": 439.0
+  },
+  {
+    "slug": "nba-tor-min-2026-10-25",
+    "minutes": 330,
+    "minutes_ok": 330,
+    "posts_home": 136.0,
+    "posts_away": 170.0
+  }
+]
