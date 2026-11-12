@@ -34,9 +34,12 @@ def find_event(game: pd.Series) -> dict:
     """The ESPN competition matching a Polymarket game, by full team names and home/away."""
     date = game.game_date_local.replace("-", "")
     sb = _cached(f"scoreboard_{date}.json", f"{ESPN_API}/scoreboard", {"dates": date})
-    want = {"home": TEAMS[game.home][0], "away": TEAMS[game.away][0]}
+    # ESPN uses "LA Clippers" while the project metadata uses "Los Angeles Clippers".
+    # Normalize only this known full-name alias; preserve home/away identity.
+    normalize = lambda name: "Los Angeles Clippers" if name == "LA Clippers" else name
+    want = {"home": normalize(TEAMS[game.home][0]), "away": normalize(TEAMS[game.away][0])}
     for ev in sb.get("events", []):
-        teams = {c["homeAway"]: c["team"]["displayName"] for c in ev["competitions"][0]["competitors"]}
+        teams = {c["homeAway"]: normalize(c["team"]["displayName"]) for c in ev["competitions"][0]["competitors"]}
         if teams == want:
             return ev
     raise LookupError(f"no ESPN event for {game.slug}")
