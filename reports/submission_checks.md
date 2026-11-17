@@ -27,8 +27,8 @@ or conclusion writing required by the course.
 
 - Collection and real timing artifacts are merged through PR #1.
 - Standard enhanced models and report are merged through PR #3.
-- Supplemental enhanced-model validation and report integration are on
-  `partner/enhanced-models`, PR #4. Merge that PR after review so report links to
-  its new figure and methods resolve on main.
+- Supplemental enhanced-model validation/report integration were merged through
+  PR #4. The 66-game expansion was merged through PR #5. Use the final replication
+  outputs for the final paper rather than generalizing the old eight-game claims.
 - Python 3.11.18 combined suite: 29 passing tests. No missing report image/link
   targets in the integrated branch. No submission was made to the course portal.
