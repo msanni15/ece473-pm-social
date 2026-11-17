@@ -1,5 +1,0 @@
-# Optional authoring tools; research/model requirements stay in requirements.txt.
-python-pptx==1.0.2
-python-docx==1.2.0
-reportlab==5.1.0
-XlsxWriter==3.3.1

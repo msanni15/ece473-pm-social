@@ -2,13 +2,6 @@
 
 ## Final-project work
 
-**Presentation and paper package:** [PowerPoint](deliverables/presentation.pptx),
-[slide PDF](deliverables/presentation.pdf), [Word draft](deliverables/final_paper_draft.docx),
-[paper PDF draft](deliverables/final_paper_draft.pdf), and
-[results/review workbook](deliverables/results_workbook.xlsx).
-See [package instructions](deliverables/README.md) for outstanding author sections
-and provisional-label limitations. These are review drafts, not a course submission.
-
 The expanded study contains **66 NBA games** and evaluates both Bluesky-to-market
 and market-to-Bluesky forecasting. It preserves the original pilot below.
 
