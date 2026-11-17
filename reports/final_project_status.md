@@ -1,4 +1,4 @@
-# Final-project status — November 12, 2026
+# Final-project status — November 17, 2026
 
 ## Scope now implemented
 
@@ -11,7 +11,7 @@ November replication. The full fixed windows contain 21,780 game-minute rows,
 game/post pairs), and 7,692 ESPN scoring plays. Model eligibility is stricter than
 these inventory counts because of exact final-play boundaries, lags, and targets.
 
-The additional work is on PR #5 until merged. Original Milestone II outputs and
+The expanded analysis was merged through PR #5 on November 12. Original Milestone II outputs and
 the report remain intact. A positive social-media forecasting result is not a
 requirement for a defensible paper; the empirical claims must match the tests.
 
@@ -91,8 +91,10 @@ pilot's conclusions unchanged.
    what traders saw at each second; search indexing is incomplete and timestamps
    are imperfect; calendar days and teams recur; some inference is exploratory.
    No causal or profitability result should be claimed.
-5. **Present and submit.** Slides, the final manuscript/PDF, and course-portal
-   submission are not yet completed. The final paper is due December 15.
+5. **Present and submit.** A draft slide deck, presentation PDF, editable Word/PDF
+   paper drafts, workbook, and presenter guide are now under `deliverables/`.
+   Authors must review/personalize them and finish the reserved writing. No
+   course-portal submission has been made. The final paper is due December 15.
 
 Additional feature development after these test outcomes are seen is exploratory
 unless tested on a genuinely unexamined later sample. The existing results should

@@ -1,0 +1,15 @@
+{
+  "forward": {
+    "prediction_records": 292864,
+    "comparisons_verified": 48,
+    "test_games": 34,
+    "prediction_sha256": "c79a1d9f2ddf077309617974a23cf933a7f5b2ce89c28cdc3df63fceb1995e0f"
+  },
+  "reverse": {
+    "prediction_records": 89820,
+    "comparisons_verified": 12,
+    "test_games": 34,
+    "prediction_sha256": "143055210410399a039aaa0ae5e013b9d88ee16ab7ada1d9fcf63b30a22b2611"
+  },
+  "status": "Every comparison RMSE/change reproduced from saved finite, uniquely keyed held-out predictions."
+}
